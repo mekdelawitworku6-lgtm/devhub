@@ -1,31 +1,70 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { apiGet } from "@/app/lib/api";
+
+interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  author?: {
+    name: string;
+    email?: string;
+  };
+}
 
 export default function PostsPage() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    apiGet("posts").then(res => {
-      if (res.posts) setPosts(res.posts);
-      setLoading(false);
-    });
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/posts");
+        if (!res.ok) throw new Error("Failed to fetch posts");
+
+        const data = await res.json();
+
+        // ✅ This ensures posts is always an array
+        const finalData = Array.isArray(data) ? data : data.posts || [];
+        setPosts(finalData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
-  if (loading) return <p className="mt-10 text-center">Loading posts...</p>;
+  if (loading) return <div className="text-center mt-20 text-gray-400">Loading feed...</div>;
+  if (error) return <div className="text-center mt-20 text-red-400">Error: {error}</div>;
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6">
-      <h1 className="text-2xl font-bold mb-6">All Posts</h1>
-      {posts.length === 0 && <p>No posts yet</p>}
-      {posts.map(post => (
-        <div key={post._id} className="mb-4 p-4 border rounded shadow">
-          <h2 className="font-bold">{post.title}</h2>
-          <p>{post.content}</p>
-          <p className="text-sm text-gray-500">By {post.author.name}</p>
-        </div>
-      ))}
+    <div className="max-w-2xl mx-auto mt-10 space-y-6 pb-10">
+      <h1 className="text-3xl font-bold text-center mb-6">DevHub Feed</h1>
+
+      {posts.length === 0 ? (
+        <p className="text-center text-gray-500">No posts to show yet.</p>
+      ) : (
+        posts.map((post) => (
+          <div
+            key={post._id}
+            className="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700 hover:border-blue-500 transition-colors"
+          >
+            <p className="text-sm text-gray-400 mb-2">
+              {post.author?.name || "Developer"}
+            </p>
+
+            <h2 className="text-xl font-semibold mb-2 text-white">
+              {post.title}
+            </h2>
+
+            <p className="text-gray-300 leading-relaxed">{post.content}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }

@@ -1,19 +1,18 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-import { IUser } from "./User";
+import mongoose, { Schema } from "mongoose";
+import "./User"; // ⭐ ensures User model is registered
 
-export interface IPost extends Document {
-  title: string;
-  content: string;
-  author: IUser["_id"];
-  createdAt: Date;
-}
+const PostSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
 
-const PostSchema: Schema = new Schema<IPost>({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const Post: Model<IPost> = mongoose.models.Post || mongoose.model("Post", PostSchema);
-export default Post;
+export default mongoose.models.Post || mongoose.model("Post", PostSchema);
