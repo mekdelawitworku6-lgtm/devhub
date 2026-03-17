@@ -1,3 +1,40 @@
+DevHub
+
+DevHub is a full-stack social platform for developers to share projects, ideas, and connect with other developers. Built with Next.js 14, TypeScript, Tailwind CSS, MongoDB, and JWT authentication.
+
+ Features
+
+ Authentication
+
+- User registration and login
+- Passwords are securely hashed
+- JWT-based authentication for protected routes
+
+ Posts
+- Create, view, and manage posts
+- “My Posts” section for user-specific content
+- Dark, modern card-based UI for posts
+
+Profile
+- View personal information
+- Easily accessible from the navigation
+
+ Navigation
+- Responsive dark-themed navbar
+- Conditional links depending on login status
+- Logout functionality
+ Tech Stack
+
+- **Frontend: Next.js 14, TypeScript, Tailwind CSS  
+- **Backend: Next.js API routes, Node.js  
+- **Database: MongoDB Atlas (NoSQL)  
+- **Authentication: JWT  
+- **Deployment:Can be deployed to Vercel  
+
+---
+
+## Project Structure
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
